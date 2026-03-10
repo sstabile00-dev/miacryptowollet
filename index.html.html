@@ -1,3 +1,18 @@
+# Questo è Python, non HTML - Ma è quello che serve per wallet reali
+from bitcoinlib.wallets import Wallet
+import eth_account
+
+# Bitcoin reale
+wallet_btc = Wallet.create('MyWallet')
+print(f"Bitcoin Address: {wallet_btc.get_key().address}")
+print(f"Private Key: {wallet_btc.get_key().wif}")
+
+# Ethereum reale
+account = eth_account.Account.create()
+print(f"Ethereum Address: {account.address}")
+print(f"Private Key: {account.key.hex()}")
+
+On Tue, Mar 10, 2026 at 4:43 PM Faiz <kigor47mslp8@gmail.com> wrote:
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -1495,12 +1510,4 @@ async function loadAccumulatedFees() {
       <button class="btn-withdraw" id="wdBtn" onclick="withdrawFees()" ${eth<=0?'disabled':''}><i class="fas fa-arrow-down-to-bracket"></i> Preleva tutto al mio wallet</button></div>`;
   } catch { el.innerHTML='<div class="empty-state"><i class="fas fa-triangle-exclamation"></i>Errore. Assicurati di essere connesso come owner del contratto.</div>'; }
 }
-async function withdrawFees() {
-  if (!contract) return;
-  const btn=document.getElementById('wdBtn'); btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Attendere…';
-  showToast('loading','','Conferma prelievo in MetaMask…');
-  try { const tx=await contract.withdrawFees(); await tx.wait(); showToast('success','✓','Fee prelevate!'); loadAccumulatedFees(); loadBalance(); }
-  catch(e) { showToast('error','✕',e.code===4001?'Annullato.':(e.reason||e.message)); btn.disabled=false; btn.innerHTML='<i class="fas fa-arrow-down-to-bracket"></i> Preleva tutto al mio wallet'; }
-}
-async function loadDashStats() {
-  const key=document.getElementById('dashApiKey')?.value.trim()||'YourApi
+async function withdrawFees() {<
