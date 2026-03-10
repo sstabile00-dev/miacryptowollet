@@ -59,7 +59,7 @@
       </div>
     </div>
 
-    <!-- AI Chatbot avanzato + sicurezza -->
+    <!-- AI Chatbot avanzato + alert sicurezza -->
     <div class="mt-12 bg-white/10 backdrop-blur-3xl rounded-3xl p-6">
       <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
         <i class="fas fa-robot"></i> Chat IA (supporto 24/7 + sicurezza automatica)
@@ -136,7 +136,6 @@
       let risposta = "Non ho capito, riprova.";
       if (q.toLowerCase().includes("fee") || q.toLowerCase().includes("guadagno")) risposta = "La fee 0.5% viene presa automaticamente dal contratto e va a te.";
       if (q.toLowerCase().includes("sicuro") || q.toLowerCase().includes("sicurezza")) risposta = "Per ora siamo su testnet. Quando passerai a soldi veri, faremo un audit professionale. Usa solo importi piccoli.";
-      if (q.toLowerCase().includes("come funziona")) risposta = "Connetti wallet, inserisci destinatario e importo, premi invia. Una sola transazione e la fee va a te automaticamente.";
       if (q.toLowerCase().includes("alert") || q.toLowerCase().includes("anomalia")) risposta = "⚠️ Alert di sicurezza attivato: se rilevo attività sospette ti avviserò subito.";
 
       setTimeout(() => addMessage(risposta, true), 700);
