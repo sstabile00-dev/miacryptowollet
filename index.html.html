@@ -6,6 +6,7 @@
   <title>MiaCryptoWallet - Gratis e Guadagni tu</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdn.ethers.io/lib/ethers-5.7.umd.min.js"></script>
 </head>
 <body class="bg-gradient-to-br from-zinc-950 via-black to-zinc-950 text-white min-h-screen">
   <div class="max-w-md mx-auto px-6 py-12">
@@ -41,10 +42,10 @@
       </div>
     </div>
 
-    <!-- AI Chatbot per autogestione -->
+    <!-- AI Chatbot avanzato + sicurezza -->
     <div class="mt-12 bg-white/10 backdrop-blur-3xl rounded-3xl p-6">
       <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
-        <i class="fas fa-robot"></i> Chat IA (supporto 24/7)
+        <i class="fas fa-robot"></i> Chat IA (supporto 24/7 + sicurezza)
       </h3>
       <div id="chat" class="h-48 bg-black/50 rounded-2xl p-4 overflow-y-auto mb-4 text-sm"></div>
       <div class="flex gap-2">
@@ -56,6 +57,7 @@
 
   <script>
     let userAddress = null;
+    const contractAddress = "0x0bd4dd01a56c6a488fa4e2d8b1c8150c937f6526";
 
     async function connectWallet() {
       if (!window.ethereum) return alert("MetaMask non trovato!");
@@ -71,12 +73,25 @@
       const amt = document.getElementById('amt').value;
       if (!to || !amt) return alert("Compila indirizzo e importo");
 
-      alert("✅ Transazione inviata con fee 0.5% automatica! (simulazione - in futuro con contratto smart)");
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const abi = ["function sendWithFee(address payable to) external payable"];
+      const contract = new ethers.Contract(contractAddress, abi, signer);
+
+      const value = ethers.utils.parseEther(amt);
+
+      try {
+        const tx = await contract.sendWithFee(to, { value });
+        await tx.wait();
+        alert(`🎉 Inviato con successo! Fee 0.5% andata automaticamente a te!`);
+      } catch (e) {
+        alert("Errore: " + e.message);
+      }
     }
 
-    // AI Chatbot semplice ma utile (autogestione)
-    const chat = document.getElementById('chat');
+    // AI Chatbot avanzato
     function addMessage(text, isAI) {
+      const chat = document.getElementById('chat');
       const div = document.createElement('div');
       div.className = isAI ? 'text-emerald-400' : 'text-white';
       div.textContent = isAI ? '🤖 IA: ' + text : 'Tu: ' + text;
@@ -86,14 +101,14 @@
 
     function sendAI() {
       const input = document.getElementById('chatInput');
-      const question = input.value.trim();
-      if (!question) return;
-      addMessage(question, false);
+      const q = input.value.trim();
+      if (!q) return;
+      addMessage(q, false);
 
-      let risposta = "Mi dispiace, non ho capito.";
-      if (question.toLowerCase().includes("fee") || question.toLowerCase().includes("guadagno")) risposta = "La fee 0.5% va automaticamente al proprietario del wallet. Tu guadagni su ogni transazione!";
-      if (question.toLowerCase().includes("sicuro") || question.toLowerCase().includes("sicurezza")) risposta = "Per ora usiamo testnet. Quando passerai a soldi veri, faremo un audit professionale. Nel frattempo usa solo importi piccoli.";
-      if (question.toLowerCase().includes("come funziona")) risposta = "Connetti il wallet, inserisci destinatario e importo, premi invia. La fee 0.5% va a te automaticamente.";
+      let risposta = "Non ho capito, riprova.";
+      if (q.toLowerCase().includes("fee") || q.toLowerCase().includes("guadagno")) risposta = "La fee 0.5% viene presa automaticamente dal contratto e va a te.";
+      if (q.toLowerCase().includes("sicuro") || q.toLowerCase().includes("sicurezza")) risposta = "Per ora siamo su testnet. Quando passerai a soldi veri, faremo un audit professionale.";
+      if (q.toLowerCase().includes("come funziona")) risposta = "Connetti wallet, inserisci destinatario e importo, premi invia. Una sola transazione e la fee va a te automaticamente.";
 
       setTimeout(() => addMessage(risposta, true), 600);
       input.value = '';
