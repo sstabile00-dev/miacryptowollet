@@ -31,6 +31,13 @@
       <p id="address" class="font-mono text-xs bg-black/50 p-4 rounded-2xl break-all mb-6"></p>
       <p class="text-3xl font-semibold" id="balance">Saldo: 0.0000 ETH</p>
 
+      <!-- Referral Program -->
+      <div class="mt-8 bg-black/50 rounded-3xl p-6">
+        <h4 class="font-bold text-emerald-400 mb-3">🔗 Il tuo link referral</h4>
+        <p id="referralLink" class="font-mono text-xs bg-zinc-900 p-3 rounded-2xl break-all select-all"></p>
+        <p class="text-xs text-zinc-400 mt-2">Condividi questo link: guadagni extra del 20% sulle fee dei tuoi amici!</p>
+      </div>
+
       <div class="mt-10">
         <h3 class="text-2xl font-bold mb-6">Invia con fee 0.5% (1 sola transazione)</h3>
         <input id="to" type="text" placeholder="Indirizzo destinatario (0x...)" class="w-full bg-zinc-900 border border-white/20 rounded-3xl px-6 py-4 mb-4 text-lg">
@@ -42,10 +49,10 @@
       </div>
     </div>
 
-    <!-- AI Chatbot avanzato + sicurezza -->
+    <!-- AI Chatbot -->
     <div class="mt-12 bg-white/10 backdrop-blur-3xl rounded-3xl p-6">
       <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
-        <i class="fas fa-robot"></i> Chat IA (supporto 24/7 + sicurezza automatica)
+        <i class="fas fa-robot"></i> Chat IA (supporto 24/7 + sicurezza)
       </h3>
       <div id="chat" class="h-48 bg-black/50 rounded-2xl p-4 overflow-y-auto mb-4 text-sm"></div>
       <div class="flex gap-2">
@@ -65,6 +72,10 @@
       userAddress = accounts[0];
       document.getElementById('address').textContent = userAddress;
       document.getElementById('walletInfo').classList.remove('hidden');
+
+      // Genera link referral
+      const refLink = window.location.origin + window.location.pathname + "?ref=" + userAddress;
+      document.getElementById('referralLink').textContent = refLink;
     }
 
     async function sendWithFee() {
@@ -77,7 +88,6 @@
       const signer = provider.getSigner();
       const abi = ["function sendWithFee(address payable to) external payable"];
       const contract = new ethers.Contract(contractAddress, abi, signer);
-
       const value = ethers.utils.parseEther(amt);
 
       try {
@@ -89,7 +99,7 @@
       }
     }
 
-    // AI avanzata con alert sicurezza
+    // AI Chatbot
     function addMessage(text, isAI) {
       const chat = document.getElementById('chat');
       const div = document.createElement('div');
@@ -104,12 +114,9 @@
       const q = input.value.trim();
       if (!q) return;
       addMessage(q, false);
-
       let risposta = "Non ho capito, riprova.";
       if (q.toLowerCase().includes("fee") || q.toLowerCase().includes("guadagno")) risposta = "La fee 0.5% viene presa automaticamente dal contratto e va a te.";
-      if (q.toLowerCase().includes("sicuro") || q.toLowerCase().includes("sicurezza")) risposta = "Per ora siamo su testnet. Quando passerai a soldi veri, faremo un audit professionale. Usa solo importi piccoli per test.";
-      if (q.toLowerCase().includes("come funziona")) risposta = "Connetti wallet, inserisci destinatario e importo, premi invia. Una sola transazione e la fee va a te automaticamente.";
-
+      if (q.toLowerCase().includes("sicuro")) risposta = "Per ora siamo su testnet. Quando passerai a soldi veri, faremo un audit professionale.";
       setTimeout(() => addMessage(risposta, true), 700);
       input.value = '';
     }
