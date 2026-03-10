@@ -15,6 +15,7 @@
 </head>
 <body class="bg-[#0a0a0a] text-white min-h-screen">
   <div class="max-w-md mx-auto px-5 py-10">
+    <!-- Icona originale e calda -->
     <div class="flex items-center gap-4 mb-10">
       <div class="w-16 h-16 bg-gradient-to-br from-emerald-400 to-cyan-400 rounded-3xl flex items-center justify-center glow">
         <span class="text-4xl font-black text-black tracking-tighter">MCW</span>
@@ -50,7 +51,7 @@
       </div>
     </div>
 
-    <!-- AI Chatbot -->
+    <!-- AI Chatbot umano -->
     <div class="mt-12 bg-white/10 backdrop-blur-3xl rounded-3xl p-6">
       <div class="flex items-center gap-3 mb-4">
         <i class="fas fa-robot text-emerald-400"></i>
@@ -69,10 +70,14 @@
     const contractAddress = "0x0bd4dd01a56c6a488fa4e2d8b1c8150c937f6526";
 
     async function connectWallet() {
-      if (!window.ethereum) {
-        alert("Su telefono:\n1. Apri l'app MetaMask\n2. Tocca 'Connetti a dApp'\n3. Incolla questo link: " + window.location.href);
+      if (/Mobi|Android|iPhone/i.test(navigator.userAgent)) {
+        // Mobile - deep link diretto a MetaMask app
+        const deepLink = "https://metamask.app.link/dapp/" + encodeURIComponent(window.location.href);
+        window.location.href = deepLink;
         return;
       }
+      // Desktop
+      if (!window.ethereum) return alert("MetaMask non trovato!");
       const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
       userAddress = accounts[0];
       document.getElementById('address').textContent = userAddress;
@@ -94,7 +99,7 @@
       try {
         const tx = await contract.sendWithFee(to, { value });
         await tx.wait();
-        alert("✅ Inviato! La fee 0.5% è andata automaticamente a te.");
+        alert("✅ Inviato! La fee 0.5% è andata automaticamente a te come founder.");
       } catch (e) {
         alert("Errore: " + e.message);
       }
